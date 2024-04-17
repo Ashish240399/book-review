@@ -1,13 +1,15 @@
 import clientPromise from "@/lib/mongodb";
-import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async (req: NextRequest, res: NextResponse) => {
+export const GET = async (req: Request, res: Response): Promise<Response> => {
   try {
     const client = await clientPromise;
     const db = client.db("book-review");
     const books = await db.collection("books").find().toArray();
-    return NextResponse.json(books, { status: 200 });
-  } catch (error) {
-    return error;
+    return Response.json(books, { status: 200 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return Response.json({ error: error.message });
+    }
+    return Response.json({ error: "An unknown error occurred" });
   }
 };
