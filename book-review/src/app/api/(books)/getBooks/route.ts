@@ -7,14 +7,19 @@ export const GET = async (req: Request, res: Response): Promise<Response> => {
     const books = db.collection("books");
     const url = new URL(req.url);
     const searchParams = new URLSearchParams(url.searchParams);
-    const search = searchParams.get("title");
+    const title = searchParams.get("title");
+    const sort = searchParams.get("sort");
     let book;
-    if (search != null) {
+    if (title != null) {
       book = await books
-        .find({ title: { $regex: search, $options: "i" } })
+        .find({ title: { $regex: title, $options: "i" } })
+        .sort(sort ? { title: sort === "desc" ? -1 : 1 } : {})
         .toArray();
     } else {
-      book = await books.find().toArray();
+      book = await books
+        .find()
+        .sort(sort ? { title: sort === "desc" ? -1 : 1 } : {})
+        .toArray();
     }
     if (!book || book.length === 0) {
       return Response.json({ message: "Book not found" }, { status: 404 });

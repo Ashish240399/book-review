@@ -7,7 +7,7 @@ export const POST = async (req: Request, res: Response): Promise<Response> => {
   dbconnection();
   const userCollection = db.collection("users");
   try {
-    const reqBody: User = await req.json();
+    const reqBody = await req.json();
     const userExists = await userCollection.findOne({ email: reqBody.email });
     if (userExists) {
       return Response.json({ message: "User already exists" }, { status: 409 });

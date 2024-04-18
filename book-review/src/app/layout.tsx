@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { dbconnection } from "@/lib/database";
+import theme from "@/theme";
+import { ThemeProvider } from "@mui/material/styles";
+import DrawerAppBar from "@/components/DrawerAppBar";
+import { PageContainer } from "@/components/PageContainer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <ThemeProvider theme={theme}>
+          <div className="bg-white min-h-[100vh] w-[100vw] overflow-auto text-[#000000b8]">
+            <DrawerAppBar />
+            <PageContainer>{children}</PageContainer>
+          </div>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
