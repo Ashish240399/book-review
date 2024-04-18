@@ -8,6 +8,7 @@ type User = {
 };
 
 type Book = {
+  _id: ObjectId;
   id: number;
   title: string;
   author: string;
