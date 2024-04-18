@@ -1,14 +1,21 @@
 import { dbconnection } from "@/lib/database";
 import { Db, ObjectId } from "mongodb";
 import { headers } from "next/headers";
-
+async function getHeaders() {
+  const headerArr = headers();
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      resolve(headerArr.get("Authorization")?.split(" ")[1]);
+    }, 1000)
+  );
+}
 export const POST = async (req: Request, res: Response): Promise<Response> => {
   try {
     const db: Db = await dbconnection();
     const books = db.collection("books");
     const users = db.collection("users");
     const reviews = db.collection("reviews");
-    const token = headers().get("Authorization")?.split(" ")[1];
+    const token = await getHeaders();
     const { bookId, userId, review } = await req.json();
     const authenticatedUser = await users.findOne({
       _id: new ObjectId(userId),

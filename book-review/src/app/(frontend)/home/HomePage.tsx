@@ -1,6 +1,5 @@
 "use client";
 import { getBooks } from "@/services/book/getBooks";
-import { Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Book } from "../../../../types";
 import ProductCard from "@/components/ProductCard";
@@ -17,9 +16,10 @@ const HomePage = () => {
   return (
     <div>
       <div className="grid grid-cols-4 gap-4">
-        {books.map((book: Book, id: number) => (
-          <ProductCard book={book} key={id} />
-        ))}
+        {books.length > 0 &&
+          books.map((book: Book, id: number) => (
+            <ProductCard book={book} key={id} />
+          ))}
       </div>
     </div>
   );

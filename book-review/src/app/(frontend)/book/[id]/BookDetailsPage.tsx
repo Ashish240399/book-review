@@ -6,7 +6,7 @@ type Props = {
 };
 
 const BookDetailsPage = ({ id }: Props) => {
-  return <div>{/* <ProductDetail books={} /> */}</div>;
+  return <div>{id}</div>;
 };
 
 export default BookDetailsPage;
