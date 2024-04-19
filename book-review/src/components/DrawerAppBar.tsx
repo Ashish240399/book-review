@@ -18,6 +18,8 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setUser } from "@/redux/slices/userSlice";
 import { logout } from "@/services/auth/logout";
+import Loader from "./Loader";
+import { hideLoader, showLoader } from "@/redux/slices/loaderSlice";
 
 const drawerWidth = 240;
 const navItems = ["Home", "Login"];
@@ -27,6 +29,7 @@ async function logoutFn(token: string) {
 }
 export default function DrawerAppBar() {
   const dispatch = useAppDispatch();
+  const loader = useAppSelector((state) => state.loader.isLoading);
   const user = useAppSelector((state) => state.user.user);
   let userDataFromLocalStorage;
   let userDataFromLocalStorageObj: any;
@@ -59,7 +62,13 @@ export default function DrawerAppBar() {
         BOOK REVIEW
       </Typography>
       <Divider />
+
       <List>
+        {user && (
+          <div className="font-bold text-[17px]">
+            Welcome! {user.name.split(" ")[0]}
+          </div>
+        )}
         {navItems.map((item) => (
           <ListItem key={item} disablePadding>
             <ListItemButton
@@ -69,7 +78,9 @@ export default function DrawerAppBar() {
                 } else if (item == "Login" && !user) {
                   router.push("/login");
                 } else if (item == "Login" && user) {
+                  dispatch(showLoader());
                   const res: any = await logoutFn(user.token);
+                  dispatch(hideLoader());
                   if (res.status == 200) {
                     localStorage.removeItem("user-book-review-app");
                     window.location.reload();
@@ -127,7 +138,9 @@ export default function DrawerAppBar() {
                   } else if (item == "Login" && !user) {
                     router.push("/login");
                   } else if (item == "Login" && user) {
+                    dispatch(showLoader());
                     const res: any = await logoutFn(user.token);
+                    dispatch(showLoader());
                     if (res.status == 200) {
                       localStorage.removeItem("user-book-review-app");
                       window.location.reload();
@@ -162,6 +175,7 @@ export default function DrawerAppBar() {
           {drawer}
         </Drawer>
       </nav>
+      {loader && <Loader />}
     </Box>
   );
 }

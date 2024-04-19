@@ -1,4 +1,5 @@
 "use client";
+// Import necessary components and functions
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -15,22 +16,53 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { login } from "@/services/auth/login";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setUser } from "@/redux/slices/userSlice";
+import { hideLoader, showLoader } from "@/redux/slices/loaderSlice";
+import Loader from "@/components/Loader";
 
+// Create a default theme
 const defaultTheme = createTheme();
 
+// Define the LoginPage component
 export default function LoginPage() {
+  // Use hooks for router and dispatch
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  // Get the current loading state from the redux store
+  const loader = useAppSelector((state) => state.loader.isLoading);
+  // Get the user logged in state from the redux store
+  const user = useAppSelector((state) => state.user.user);
+
+  // If loggedin then redirecting to Home Page
+  if (user) {
+    router.replace("/home");
+  }
+
+  // Define the submit handler for the login form
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    // Prevent the default form submit action
     event.preventDefault();
+
+    // Get the form data
     const data = new FormData(event.currentTarget);
+
+    // Show the loader
+    dispatch(showLoader());
+
+    // Call the login function with the email and password from the form data
     const response = await login(
       data.get("email") as string,
       data.get("password") as string
     );
+
+    // Hide the loader
+    dispatch(hideLoader());
+
+    // Handle the response from the login function
     if (response.status == 200) {
+      // If the login was successful, redirect to the home page and store the user data in local storage and redux store
       router.push("/home");
       localStorage.setItem(
         "user-book-review-app",
@@ -45,14 +77,18 @@ export default function LoginPage() {
         })
       );
     } else if (response.status == 401) {
+      // If the status is 401, show an alert that the email or password was invalid
       alert("Invalid email or password");
     } else if (response.status == 404) {
+      // If the status is 404, show an alert that the user was not found
       alert("User not found");
     } else {
+      // If the status is anything else, show an alert that an unknown error occurred
       alert("An unknown error occurred");
     }
   };
 
+  // Render the login page
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -110,11 +146,7 @@ export default function LoginPage() {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                {/* <Link href="#" variant="body2">
-                  Forgot password?
-                </Link> */}
-              </Grid>
+              <Grid item xs></Grid>
               <Grid item>
                 <Link href="/register" variant="body2">
                   {"Don't have an account? Sign Up"}
@@ -124,6 +156,7 @@ export default function LoginPage() {
           </Box>
         </Box>
       </Container>
+      {loader && <Loader />}
     </ThemeProvider>
   );
 }

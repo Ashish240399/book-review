@@ -22,9 +22,7 @@ export default function ControlledRating({
         "& > legend": { mt: 2 },
       }}
     >
-      <Typography variant="h5" component="legend">
-        Add Your Review About This Book
-      </Typography>
+      <p className="text-[16px] md:[20px]">Add Your Review About This Book</p>
       <Rating
         name="simple-controlled"
         value={value}

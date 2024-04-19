@@ -23,24 +23,35 @@ export default function ProductCard({ book }: { book: Book }) {
         alignItems: "center",
       }}
     >
-      <div>
+      <div className="w-full">
         <CardMedia
           sx={{
-            height: "20vw",
+            height: { xs: "50vw", md: "20vw" },
             width: "100%",
           }}
           component="img"
           alt="green iguana"
           image={book.cover_image}
         />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
+        <div className="p-2 sm:p-3 md:p-4">
+          <Typography
+            gutterBottom
+            component="div"
+            sx={{
+              typography: {
+                xs: "subtitle1", // On extra small screens, use h6
+                sm: "h5", // On small screens and up, use h5
+              },
+            }}
+          >
             {book.title}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {book.description}
-          </Typography>
-        </CardContent>
+          <div className="hidden md:flex">
+            <Typography variant="body2" color="text.secondary">
+              {book.description}
+            </Typography>
+          </div>
+        </div>
       </div>
       <CardActions
         sx={{
