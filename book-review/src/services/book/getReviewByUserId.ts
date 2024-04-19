@@ -1,27 +1,21 @@
 import axios from "axios";
 
-export async function addReview({
-  bookId,
+export async function getReviewByUserId({
   userId,
-  review,
-  token,
+  bookId,
 }: {
-  bookId: string;
   userId: string;
-  review: number;
-  token: string;
+  bookId: string;
 }) {
   try {
     const response = await axios.post(
-      "/api/addReview",
+      "/api/getReviewByUserId",
       {
-        bookId: bookId,
         userId: userId,
-        review: review,
+        bookId: bookId,
       },
       {
         headers: {
-          Authorization: "Bearer " + token,
           "Content-Type": "application/json",
         },
       }

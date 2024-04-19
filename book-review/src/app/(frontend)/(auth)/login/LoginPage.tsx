@@ -15,11 +15,14 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { login } from "@/services/auth/login";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/redux/hook";
+import { setUser } from "@/redux/slices/userSlice";
 
 const defaultTheme = createTheme();
 
 export default function LoginPage() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -29,6 +32,18 @@ export default function LoginPage() {
     );
     if (response.status == 200) {
       router.push("/home");
+      localStorage.setItem(
+        "user-book-review-app",
+        JSON.stringify(response.data.user)
+      );
+      dispatch(
+        setUser({
+          _id: response.data.user._id,
+          email: response.data.user.email,
+          name: response.data.user.name,
+          token: response.data.user.token,
+        })
+      );
     } else if (response.status == 401) {
       alert("Invalid email or password");
     } else if (response.status == 404) {

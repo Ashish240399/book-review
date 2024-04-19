@@ -8,8 +8,11 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Book } from "../../types";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/redux/hook";
+import { setBook } from "@/redux/slices/bookDetailsSlice";
 
 export default function ProductCard({ book }: { book: Book }) {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   return (
     <Card
@@ -47,6 +50,7 @@ export default function ProductCard({ book }: { book: Book }) {
         <Button
           onClick={() => {
             router.push("/book/" + book._id);
+            dispatch(setBook(book));
           }}
           size="small"
         >
